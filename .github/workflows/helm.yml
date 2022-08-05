@@ -1,0 +1,50 @@
+name: angular
+
+on:
+  workflow_call:
+    inputs:
+      samoHelmSourceDir:
+        description: 'Helm source directory path'
+        default: 'src/main/helm'
+        required: false
+        type: string
+      samoHelmSourceCopy:
+        description: 'Helm copy and filter source directory'
+        default: 'false'
+        required: false
+        type: string
+jobs:
+  docker:
+    name: build and push
+    runs-on: [ self-hosted, aws ]
+    container:
+      image: ghcr.io/lorislab/samo:3.1.0
+      options: --user root 
+    env:
+      SAMO_DOCKER_REGISTRY: harbor.1000kit.org
+      SAMO_DOCKER_RELEASE_REGISTRY: harbor.1000kit.org
+      SAMO_HELM_SOURCE_DIR: ${{ inputs.samoHelmSourceDir }}
+      SAMO_HELM_SOURCE_COPY: ${{ inputs.samoHelmSourceCopy }}
+      SAMO_HELM_PUSH_URL: 'https://harbor.1000kit.org/api/chartrepo/1000kit/charts'
+      SAMO_HELM_REPO: 1000kit
+      SAMO_HELM_REPO_URL: 'https://harbor.1000kit.org/chartrepo/1000kit/'
+      SAMO_HELM_REPO_USERNAME: ${{ secrets.HARBOR_USER }}
+      SAMO_HELM_REPO_PASSWORD: ${{ secrets.HARBOR_TOKEN }}
+      SAMO_HELM_DIR: target/helm
+      SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
+      SAMO_HELM_VALUES_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_REGISTRY},app.image.tag={{ .Version }},app.image.repository=1000kit/{{ .Name }}"
+      SAMO_HELM_PUSH_TYPE: 'harbor'
+      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=1000kit/{{ .Name }}"
+      SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: actions/download-artifact@v3
+      with:
+        name: package
+        path: .      
+    - name: helm build
+      run: samo project helm build -v debug
+    - name: helm push
+      run: samo project helm push -v debug 
