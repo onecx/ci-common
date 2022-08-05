@@ -13,6 +13,11 @@ on:
         default: 'false'
         required: false
         type: string
+      packageDir:
+        description: 'Package directory'
+        default: 'target'
+        required: false
+        type: string
 jobs:
   docker:
     name: build and push
