@@ -23,6 +23,14 @@ on:
         description: 'Package directory'
         required: true
         type: string
+      HELM_REPO_NAME:
+        description: 'Package directory'
+        required: false
+        type: string  
+      HELM_REPO_URL:
+        description: 'Package directory'
+        required: false
+        type: string          
 jobs:
   docker:
     name: build and push
@@ -32,6 +40,8 @@ jobs:
       options: --user root 
     env:
       HELM_CHART_URL: ${{ inputs.HELM_CHART_URL }}
+      HELM_REPO_NAME: ${{ inputs.HELM_REPO_NAME }}
+      HELM_REPO_URL: ${{ inputs.HELM_REPO_URL }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
@@ -41,6 +51,8 @@ jobs:
       with:
         fetch-depth: 0
     - name: get kubeconfig
-      run: aws eks update-kubeconfig --region {AWS_DEFAULT_REGION} --name ${EKS_CLUSTER_NAME}
+      run: aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${EKS_CLUSTER_NAME}
+    - name: add helm repo
+      run: helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
     - name: helm install
       run: helm install test .
