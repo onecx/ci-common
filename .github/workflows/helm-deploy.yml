@@ -1,0 +1,46 @@
+name: helm-deploy
+
+on:
+  workflow_call:
+    inputs:
+      AWS_ACCESS_KEY_ID:
+        description: 'Helm source directory path'
+        required: true
+        type: string
+      AWS_SECRET_ACCESS_KEY:
+        description: 'Helm copy and filter source directory'
+        required: true
+        type: string
+      AWS_DEFAULT_REGION:
+        description: 'Helm copy and filter source directory'
+        required: true
+        type: string  
+      EKS_CLUSTER_NAME:
+        description: 'Helm copy and filter source directory'
+        required: true
+        type: string          
+      HELM_CHART_URL:
+        description: 'Package directory'
+        required: true
+        type: string
+jobs:
+  docker:
+    name: build and push
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/lorislab/samo:3.1.0
+      options: --user root 
+    env:
+      HELM_CHART_URL: ${{ inputs.HELM_CHART_URL }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
+      EKS_CLUSTER_NAME: ${{ inputs.EKS_CLUSTER_NAME }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: get kubeconfig
+      run: aws eks update-kubeconfig --region {AWS_DEFAULT_REGION} --name ${EKS_CLUSTER_NAME}
+    - name: helm install
+      run: helm install test .
