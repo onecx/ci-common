@@ -37,22 +37,6 @@ on:
       AWS_SECRET_ACCESS_KEY:
         required: true
 jobs:
-  print:
-    runs-on: [ self-hosted, ecs ]
-    steps:
-      - name: print
-        run: echo ${{ inputs.HELM_REPO_URL }}
-      - name: print2
-        run: echo ${{ inputs.HELM_CHART_PATH }}
-    env:
-      HELM_APP_NAME: ${{ inputs.HELM_APP_NAME }}
-      HELM_CHART_PATH: ${{ inputs.HELM_CHART_PATH }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
-      EKS_CLUSTER_NAME: ${{ inputs.EKS_CLUSTER_NAME }}
-      EKS_TARGET_NAMESPACE: ${{ inputs.EKS_TARGET_NAMESPACE }}        
-
   install-local:
     if: inputs.HELM_REPO_URL == '' && inputs.HELM_CHART_PATH != ''  
     name: install-local
