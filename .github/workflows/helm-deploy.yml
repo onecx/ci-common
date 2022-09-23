@@ -10,7 +10,11 @@ on:
       EKS_CLUSTER_NAME:
         description: 'Helm copy and filter source directory'
         required: true
-        type: string          
+        type: string  
+      EKS_TARGET_NAMESPACE:
+        description: 'Helm copy and filter source directory'
+        required: true
+        type: string         
       HELM_CHART_URL:
         description: 'Package directory'
         required: true
@@ -22,7 +26,15 @@ on:
       HELM_REPO_URL:
         description: 'Package directory'
         required: false
-        type: string     
+        type: string   
+      HELM_APP_NAME:
+        description: 'Package directory'
+        required: false
+        type: string
+      HELM_CHART_PATH:
+        description: 'Package directory'
+        required: false
+        type: string          
     secrets:
       AWS_ACCESS_KEY_ID:
         required: true
