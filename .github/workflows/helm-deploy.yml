@@ -14,11 +14,7 @@ on:
       EKS_TARGET_NAMESPACE:
         description: 'Helm copy and filter source directory'
         required: true
-        type: string         
-      HELM_CHART_URL:
-        description: 'Package directory'
-        required: true
-        type: string
+        type: string    
       HELM_REPO_NAME:
         description: 'Package directory'
         required: false
@@ -41,15 +37,36 @@ on:
       AWS_SECRET_ACCESS_KEY:
         required: true
 jobs:
-  docker:
-    name: build and push
+  install-local:
+    if: github.event.inputs.HELM_REPO_URL == '' && github.event.inputs.HELM_CHART_PATH != ''  
+    name: install-local
     runs-on: [ self-hosted, ecs ]
     env:
-      HELM_CHART_URL: ${{ inputs.HELM_CHART_URL }}
+      HELM_APP_NAME: ${{ inputs.HELM_APP_NAME }}
+      HELM_CHART_PATH: ${{ inputs.HELM_CHART_PATH }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
+      EKS_CLUSTER_NAME: ${{ inputs.EKS_CLUSTER_NAME }}
+      EKS_TARGET_NAMESPACE: ${{ inputs.EKS_TARGET_NAMESPACE }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: get kubeconfig
+      run: aws eks update-kubeconfig --region ${AWS_DEFAULT_REGION} --name ${EKS_CLUSTER_NAME}
+    - name: helm install
+      run: helm install ${HELM_APP_NAME} ${HELM_CHART_PATH} -n ${EKS_TARGET_NAMESPACE}
+      
+      
+  install-remote:
+    if: github.event.inputs.HELM_CHART_PATH == '' && github.event.inputs.HELM_REPO_URL != ''
+    name: install-remote
+    runs-on: [ self-hosted, ecs ]
+    env:
       HELM_REPO_NAME: ${{ inputs.HELM_REPO_NAME }}
       HELM_REPO_URL: ${{ inputs.HELM_REPO_URL }}
       HELM_APP_NAME: ${{ inputs.HELM_APP_NAME }}
-      HELM_CHART_PATH: ${{ inputs.HELM_CHART_PATH }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
@@ -64,4 +81,4 @@ jobs:
     - name: add helm repo
       run: helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
     - name: helm install
-      run: helm install ${HELM_APP_NAME} ${HELM_CHART_PATH} -n ${EKS_TARGET_NAMESPACE}
+      run: helm install ${HELM_APP_NAME} ${HELM_REPO_NAME}/${HELM_APP_NAME} -n ${EKS_TARGET_NAMESPACE}
