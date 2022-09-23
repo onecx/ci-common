@@ -3,14 +3,6 @@ name: helm-deploy
 on:
   workflow_call:
     inputs:
-      AWS_ACCESS_KEY_ID:
-        description: 'Helm source directory path'
-        required: true
-        type: string
-      AWS_SECRET_ACCESS_KEY:
-        description: 'Helm copy and filter source directory'
-        required: true
-        type: string
       AWS_DEFAULT_REGION:
         description: 'Helm copy and filter source directory'
         required: true
@@ -30,7 +22,12 @@ on:
       HELM_REPO_URL:
         description: 'Package directory'
         required: false
-        type: string          
+        type: string     
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
 jobs:
   docker:
     name: build and push
