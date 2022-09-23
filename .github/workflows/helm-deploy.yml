@@ -35,9 +35,6 @@ jobs:
   docker:
     name: build and push
     runs-on: self-hosted
-    container:
-      image: ghcr.io/lorislab/samo:3.1.0
-      options: --user root 
     env:
       HELM_CHART_URL: ${{ inputs.HELM_CHART_URL }}
       HELM_REPO_NAME: ${{ inputs.HELM_REPO_NAME }}
