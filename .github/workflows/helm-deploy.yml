@@ -36,10 +36,13 @@ jobs:
       HELM_CHART_URL: ${{ inputs.HELM_CHART_URL }}
       HELM_REPO_NAME: ${{ inputs.HELM_REPO_NAME }}
       HELM_REPO_URL: ${{ inputs.HELM_REPO_URL }}
+      HELM_APP_NAME: ${{ inputs.HELM_APP_NAME }}
+      HELM_CHART_PATH: ${{ inputs.HELM_CHART_PATH }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ inputs.AWS_DEFAULT_REGION }}
       EKS_CLUSTER_NAME: ${{ inputs.EKS_CLUSTER_NAME }}
+      EKS_TARGET_NAMESPACE: ${{ inputs.EKS_TARGET_NAMESPACE }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -49,4 +52,4 @@ jobs:
     - name: add helm repo
       run: helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
     - name: helm install
-      run: helm install test .
+      run: helm install ${HELM_APP_NAME} ${HELM_CHART_PATH} -n ${EKS_TARGET_NAMESPACE}
