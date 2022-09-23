@@ -34,7 +34,7 @@ on:
 jobs:
   docker:
     name: build and push
-    runs-on: self-hosted
+    runs-on: [ self-hosted, ecs ]
     env:
       HELM_CHART_URL: ${{ inputs.HELM_CHART_URL }}
       HELM_REPO_NAME: ${{ inputs.HELM_REPO_NAME }}
