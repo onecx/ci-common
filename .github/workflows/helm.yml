@@ -21,10 +21,7 @@ on:
 jobs:
   docker:
     name: build and push
-    runs-on: [ self-hosted, aws ]
-    container:
-      image: ghcr.io/lorislab/samo:3.1.0
-      options: --user root 
+    runs-on: [ self-hosted, samo ]
     env:
       SAMO_DOCKER_REGISTRY: harbor.1000kit.org
       SAMO_DOCKER_RELEASE_REGISTRY: harbor.1000kit.org
