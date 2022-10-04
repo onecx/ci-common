@@ -12,7 +12,9 @@ on:
 jobs:
   docker:
     name: build and push
-    runs-on: [ self-hosted, samo ]
+    container:
+      image: ghcr.io/lorislab/samo:3.1.0
+      options: --user root
     env:
       DOCKER_CONFIG: $HOME/.docker
       SAMO_DOCKER_FILE:  ${{ inputs.samoDockerFile }}
