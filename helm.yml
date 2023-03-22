@@ -1,4 +1,4 @@
-name: angular
+name: helm
 
 on:
   workflow_call:
@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       samoHelmSourceCopy:
-        description: 'Helm copy and filter source directory'
+        description: 'Samo copy and filter helm source directory'
         default: 'false'
         required: false
         type: string
@@ -21,20 +21,14 @@ on:
 jobs:
   docker:
     name: build and push
-    runs-on: [ self-hosted, aws ]
-    container:
-      image: ghcr.io/lorislab/samo:3.1.0
-      options: --user root 
+    # runs-on: [ self-hosted, aws ]
+    runs-on: ubuntu-latest
     env:
-      SAMO_DOCKER_REGISTRY: harbor.1000kit.org
-      SAMO_DOCKER_RELEASE_REGISTRY: harbor.1000kit.org
+      SAMO_DOCKER_REGISTRY: ghcr.io
+      SAMO_DOCKER_RELEASE_REGISTRY: ghcr.io
       SAMO_HELM_SOURCE_DIR: ${{ inputs.samoHelmSourceDir }}
       SAMO_HELM_SOURCE_COPY: ${{ inputs.samoHelmSourceCopy }}
-      SAMO_HELM_PUSH_URL: 'https://harbor.1000kit.org/api/chartrepo/1000kit/charts'
-      SAMO_HELM_REPO: 1000kit
-      SAMO_HELM_REPO_URL: 'https://harbor.1000kit.org/chartrepo/1000kit/'
-      SAMO_HELM_REPO_USERNAME: ${{ secrets.HARBOR_USER }}
-      SAMO_HELM_REPO_PASSWORD: ${{ secrets.HARBOR_TOKEN }}
+      SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts      
       SAMO_HELM_DIR: target/helm
       SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
       SAMO_HELM_VALUES_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_REGISTRY},app.image.tag={{ .Version }},app.image.repository=1000kit/{{ .Name }}"
@@ -42,9 +36,16 @@ jobs:
       SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=1000kit/{{ .Name }}"
       SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
     steps:
+    - uses: lorislab/install-samo-action@v1
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.SAMO_DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}        
     - uses: actions/download-artifact@v3
       with:
         name: package

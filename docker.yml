@@ -1,10 +1,10 @@
-name: angular
+name: docker
 
 on:
   workflow_call:
     inputs:
       samoDockerFile:
-        description: 'Dockerfile path'
+        description: 'Dockerfile path in the project'
         default: 'src/main/docker/Dockerfile'
         required: false
         type: string
@@ -12,16 +12,15 @@ on:
 jobs:
   docker:
     name: build and push
-    container:
-      image: ghcr.io/lorislab/samo:3.1.0
-      options: --user root
+    # runs-on: [ self-hosted, aws ]
+    runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker
       SAMO_DOCKER_FILE:  ${{ inputs.samoDockerFile }}
-      SAMO_DOCKER_REGISTRY: harbor.1000kit.org
+      SAMO_DOCKER_REGISTRY: ghcr.io
       SAMO_DOCKER_GROUP: '1000kit/'
       SAMO_DOCKER_TAG_TEMPLATE_LIST: '{{ .Version }}'  
-      SAMO_DOCKER_RELEASE_REGISTRY: harbor.1000kit.org
+      SAMO_DOCKER_RELEASE_REGISTRY: ghcr.io
       SAMO_DOCKER_RELEASE_GROUP: '1000kit/'
       SAMO_DOCKER_SKIP_OPENCONTAINERS_LABELS: 'false'
       SAMO_DOCKER_CONTEXT: '.'
@@ -30,6 +29,7 @@ jobs:
       SAMO_DOCKER_SKIP_DEV: 'false'
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'      
     steps:
+    - uses: lorislab/install-samo-action@v1
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
@@ -37,12 +37,12 @@ jobs:
       with:
         name: package
         path: .
-    - name: Login to Harbor
+    - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:
         registry: ${{ env.SAMO_DOCKER_REGISTRY }}
-        username: ${{ secrets.HARBOR_USER }}
-        password: ${{ secrets.HARBOR_TOKEN }}        
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}  
     - name: docker build
       run: samo project docker build -v debug
     - name: docker push
