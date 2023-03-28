@@ -36,7 +36,7 @@ To integration in the application pipe use this include and set up these variabl
     needs: docker
     secrets: inherit
     with:
-      artifactPath: 'target'
+      helmdir: 'target/helm'
       samoHelmSourceDir: src/main/helm
       samoHelmSourceCopy: true
 ```
