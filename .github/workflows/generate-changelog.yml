@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0    
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}    
       - uses: lorislab/install-changelog-action@v1
       - name: Create changelog 
         run: changelog generate --create-release --close-version --file .github/changelog.yaml

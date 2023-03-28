@@ -19,14 +19,15 @@ jobs:
       SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}"
       SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0    
-    - uses: lorislab/install-samo-action@v2
-    - uses: docker/login-action@v2
-      with:
-        registry: ${{ env.SAMO_DOCKER_REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: helm release
-      run: samo project helm release -v debug     
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+      - uses: lorislab/install-samo-action@v2
+      - uses: docker/login-action@v2
+        with:
+          registry: ${{ env.SAMO_DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: helm release
+        run: samo project helm release -v debug     
