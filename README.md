@@ -23,9 +23,9 @@ jobs:
   java:
     uses: onecx/ci-common/.github/workflows/helm-build.yml@v1
     secrets: inherit
-    with:
+    with:      
       artifact: ''    
-      artifactPath: '.'
+      helmdir: '.'
 ```
 
 To integration in the application pipe use this include and set up these variables:
