@@ -64,6 +64,9 @@ jobs:
       with:
         name: ${{ inputs.artifact }}
         path: ${{ inputs.artifactPath }}      
+    - name: change directory
+      if: ${{ inputs.helmDir == '.' }}
+      run: cd ..
     - name: helm build
       run: samo project helm build -v debug
     - name: helm push
