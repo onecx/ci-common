@@ -1,10 +1,11 @@
-name: chnagelog
+name: changelog
 
 on:
   workflow_call:
+
 jobs:
   changelog:
-    name: changelog
+    name: generate
     runs-on: ubuntu-latest
     steps:
       - uses: lorislab/install-changelog-action@v1
