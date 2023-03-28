@@ -8,6 +8,11 @@ on:
         default: 'src/main/docker/Dockerfile'
         required: false
         type: string
+      artifact:
+        description: 'Name of the artifact for the build'
+        default: 'package'
+        required: false
+        type: string  
 
 jobs:
   docker:
@@ -29,13 +34,13 @@ jobs:
       SAMO_DOCKER_SKIP_DEV: 'false'
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'      
     steps:
-    - uses: lorislab/install-samo-action@v1
+    - uses: lorislab/install-samo-action@v2
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - uses: actions/download-artifact@v3
       with:
-        name: package
+        name: ${{ inputs.artifact }}
         path: .
     - uses: docker/login-action@v2
       with:

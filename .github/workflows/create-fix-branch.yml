@@ -16,6 +16,6 @@ jobs:
           git config --global --add safe.directory "${GITHUB_WORKSPACE}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-      - uses: lorislab/install-samo-action@v1
+      - uses: lorislab/install-samo-action@v2
       - name: Create fix branch
         run: samo project patch --tag ${{ github.ref_name }}
