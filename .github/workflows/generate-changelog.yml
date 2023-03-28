@@ -1,0 +1,14 @@
+name: chnagelog
+
+on:
+  workflow_call:
+jobs:
+  changelog:
+    name: changelog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: lorislab/install-changelog-action@v1
+      - name: Create changelog 
+        run: changelog generate --create-release --close-version --file .github/changelog.yaml
+        env:
+          CHANGELOG_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -10,14 +10,24 @@ on:
         type: string
       samoHelmSourceCopy:
         description: 'Samo copy and filter helm source directory'
-        default: 'false'
+        default: false
         required: false
-        type: string
-      packageDir:
-        description: 'Package directory'
+        type: boolean
+      artifactPath:
+        description: 'Artifact path'
         default: 'target'
         required: false
         type: string
+      push:
+        description: 'Push helm package'
+        default: 'true'
+        required: false
+        type: boolean
+      artifact:
+        description: 'Name of the artifact for the build'
+        default: 'package'
+        required: false
+        type: string      
 jobs:
   docker:
     name: build and push
@@ -31,26 +41,26 @@ jobs:
       SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts      
       SAMO_HELM_DIR: target/helm
       SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
-      SAMO_HELM_VALUES_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_REGISTRY},app.image.tag={{ .Version }},app.image.repository=1000kit/{{ .Name }}"
-      SAMO_HELM_PUSH_TYPE: 'harbor'
-      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=1000kit/{{ .Name }}"
+      SAMO_HELM_VALUES_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_REGISTRY},app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}"
+      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}"
       SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
     steps:
     - uses: lorislab/install-samo-action@v1
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
+    - uses: docker/login-action@v2
       with:
         registry: ${{ env.SAMO_DOCKER_REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}        
     - uses: actions/download-artifact@v3
+      if: ${{ inputs.artifact != '' }} 
       with:
-        name: package
-        path: ${{ inputs.packageDir }}      
+        name: ${{ inputs.artifact }}
+        path: ${{ inputs.artifactPath }}      
     - name: helm build
       run: samo project helm build -v debug
     - name: helm push
+      if: ${{ inputs.push }}
       run: samo project helm push -v debug 

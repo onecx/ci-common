@@ -1,0 +1,21 @@
+name: Create release tag
+on:
+  workflow_call:
+
+jobs:
+  release:
+    name: create release tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CI_PAT }}
+      - name: Config git
+        run: |
+          git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+      - uses: lorislab/install-samo-action@v1        
+      - name: Create release
+        run: samo project release

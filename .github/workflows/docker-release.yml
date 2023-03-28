@@ -1,0 +1,32 @@
+name: docker
+
+on:
+  workflow_call:
+
+jobs:
+  docker:
+    name: build and push
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_CONFIG: $HOME/.docker
+      SAMO_DOCKER_FILE:  ${{ inputs.samoDockerFile }}
+      SAMO_DOCKER_REGISTRY: ghcr.io
+      SAMO_DOCKER_GROUP: ${{ github.repository_owner }}/
+      SAMO_DOCKER_TAG_TEMPLATE_LIST: '{{ .Version }}'  
+      SAMO_DOCKER_RELEASE_REGISTRY: ghcr.io
+      SAMO_DOCKER_RELEASE_GROUP: ${{ github.repository_owner }}/
+      SAMO_DOCKER_SKIP_OPENCONTAINERS_LABELS: 'false'
+      SAMO_DOCKER_CONTEXT: '.'
+      SAMO_DOCKER_SKIP_PULL: 'false'
+      SAMO_DOCKER_BUILD_PUSH: 'false'
+      SAMO_DOCKER_SKIP_DEV: 'false'
+      SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'      
+    steps:
+    - uses: lorislab/install-samo-action@v1
+    - uses: docker/login-action@v2
+      with:
+        registry: ${{ env.SAMO_DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}  
+    - name: docker release
+      run: samo project docker release -v debug
