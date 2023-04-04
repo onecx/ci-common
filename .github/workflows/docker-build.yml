@@ -16,7 +16,7 @@ on:
 
 jobs:
   docker:
-    name: build and push
+    name: docker build and push
     # runs-on: [ self-hosted, aws ]
     runs-on: ubuntu-latest
     env:

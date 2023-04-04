@@ -5,7 +5,7 @@ on:
 
 jobs:
   docker:
-    name: build and push
+    name: docker build and push
     runs-on: ubuntu-latest
     env:
       DOCKER_CONFIG: $HOME/.docker

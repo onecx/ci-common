@@ -5,7 +5,7 @@ on:
    
 jobs:
   helm:
-    name: release
+    name: helm release
     runs-on: ubuntu-latest
     env:
       SAMO_DOCKER_REGISTRY: ghcr.io

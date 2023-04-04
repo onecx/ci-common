@@ -40,7 +40,7 @@ on:
         type: string      
 jobs:
   helm:
-    name: build and push
+    name: helm build and push
     # runs-on: [ self-hosted, aws ]
     runs-on: ubuntu-latest
     env:

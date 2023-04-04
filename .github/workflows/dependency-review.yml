@@ -2,23 +2,13 @@ name: dependency-review
 
 on:
   workflow_call:
-    # inputs:
-    #   base-ref:
-    #     description: 'Provide custom git references for the git base/head when performing the comparison check'
-    #     required: true
-    #     type: string
-    #   head-ref:
-    #     description: 'Provide custom git references for the git base/head when performing the comparison check'
-    #     required: true
-    #     type: string        
+     
 jobs:
   dependency-review:
+    name: dependency review
     runs-on: ubuntu-latest
     permissions:
       contents: read    
     steps:
       - uses: actions/checkout@v3
       - uses: actions/dependency-review-action@v2
-        # with:
-        #   base-ref: ${{ inputs.base-ref }}
-        #   head-ref: ${{ inputs.head-ref }}
