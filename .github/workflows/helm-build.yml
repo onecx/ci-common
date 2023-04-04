@@ -30,7 +30,7 @@ on:
         type: string
       push:
         description: 'Push helm package'
-        default: true
+        default: false
         required: false
         type: boolean
       artifact:
