@@ -56,5 +56,5 @@ jobs:
     - name: docker build
       run: samo project docker build -v debug
     - name: docker push
-      if: ${{ inputs.push == 'true' }}
+      if: ${{ inputs.push }}
       run: samo project docker push -v debug 
