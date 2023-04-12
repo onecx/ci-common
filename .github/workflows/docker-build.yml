@@ -13,6 +13,11 @@ on:
         default: 'package'
         required: false
         type: string  
+      push:
+        description: 'Push docker image'
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   docker:
@@ -50,4 +55,5 @@ jobs:
     - name: docker build
       run: samo project docker build -v debug
     - name: docker push
+      if: ${{ inputs.push == 'true' }}
       run: samo project docker push -v debug 
