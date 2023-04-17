@@ -42,6 +42,7 @@ jobs:
       SAMO_DOCKER_BUILD_PUSH: 'false'
       SAMO_DOCKER_SKIP_DEV: 'false'
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'
+      SAMO_CONVENTIONAL_COMMITS: 'true'
     steps:
     - uses: lorislab/install-samo-action@v2
     - uses: actions/checkout@v3

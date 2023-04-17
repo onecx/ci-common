@@ -6,6 +6,8 @@ jobs:
   release:
     name: create release tag
     runs-on: ubuntu-latest
+    env:
+      SAMO_CONVENTIONAL_COMMITS: 'true'    
     steps:
       - uses: actions/checkout@v3
         with:
