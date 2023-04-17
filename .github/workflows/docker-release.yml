@@ -2,7 +2,12 @@ name: docker
 
 on:
   workflow_call:
-
+    inputs:
+      tags:
+        description: 'Release docker image tags'
+        default: '{{ .Release }}'
+        required: false
+        type: string
 jobs:
   docker:
     name: docker build and push
@@ -12,7 +17,7 @@ jobs:
       SAMO_DOCKER_FILE:  ${{ inputs.samoDockerFile }}
       SAMO_DOCKER_REGISTRY: ghcr.io
       SAMO_DOCKER_GROUP: ${{ github.repository_owner }}/
-      SAMO_DOCKER_TAG_TEMPLATE_LIST: '{{ .Version }}'  
+      SAMO_DOCKER_RELEASE_TAGS: ${{ inputs.tags }}
       SAMO_DOCKER_RELEASE_REGISTRY: ghcr.io
       SAMO_DOCKER_RELEASE_GROUP: ${{ github.repository_owner }}/
       SAMO_DOCKER_SKIP_OPENCONTAINERS_LABELS: 'false'

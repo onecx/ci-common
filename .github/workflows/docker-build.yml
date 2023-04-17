@@ -18,7 +18,11 @@ on:
         default: false
         required: false
         type: boolean
-
+      tags:
+        description: 'Additional docker image tags'
+        default: '{{ .Version }}'
+        required: false
+        type: string
 jobs:
   docker:
     name: docker build and push
@@ -29,7 +33,7 @@ jobs:
       SAMO_DOCKER_FILE:  ${{ inputs.samoDockerFile }}
       SAMO_DOCKER_REGISTRY: ghcr.io
       SAMO_DOCKER_GROUP: ${{ github.repository_owner }}/
-      SAMO_DOCKER_TAG_TEMPLATE_LIST: '{{ .Version }}'  
+      SAMO_DOCKER_TAG_TEMPLATE_LIST: ${{ inputs.tags }}  
       SAMO_DOCKER_RELEASE_REGISTRY: ghcr.io
       SAMO_DOCKER_RELEASE_GROUP: ${{ github.repository_owner }}/
       SAMO_DOCKER_SKIP_OPENCONTAINERS_LABELS: 'false'
@@ -37,7 +41,7 @@ jobs:
       SAMO_DOCKER_SKIP_PULL: 'false'
       SAMO_DOCKER_BUILD_PUSH: 'false'
       SAMO_DOCKER_SKIP_DEV: 'false'
-      SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'      
+      SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'
     steps:
     - uses: lorislab/install-samo-action@v2
     - uses: actions/checkout@v3
