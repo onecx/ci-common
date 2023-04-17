@@ -15,8 +15,8 @@ jobs:
       SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts      
       SAMO_HELM_DIR: target/helm
       SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
-      SAMO_HELM_VALUES_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_REGISTRY},app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}"
-      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: "app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}"
+      SAMO_HELM_VALUES_TEMPLATE_LIST: 'app.image.registry=${SAMO_DOCKER_REGISTRY},app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
+      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: 'app.image.registry=${SAMO_DOCKER_RELEASE_REGISTRY},app.image.tag={{ .Release }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
       SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
       SAMO_CONVENTIONAL_COMMITS: 'true'      
     steps:
