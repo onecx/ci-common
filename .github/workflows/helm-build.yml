@@ -56,7 +56,7 @@ jobs:
       SAMO_CONVENTIONAL_COMMITS: 'true'
     steps:
       - uses: lorislab/install-samo-action@v2
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: docker/login-action@v2

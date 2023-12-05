@@ -1,0 +1,35 @@
+name: Update helm chart dependencies
+
+on:
+  workflow_call:
+    inputs:
+      targetRepository:
+        description: 'Target repository'
+        required: true
+        type: string
+      eventName:
+        description: 'Event name'
+        default: 'helm-update-deps'
+        required: false
+        type: string
+jobs:
+  build:
+    name: Create helm update event
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      
+      - uses: lorislab/install-samo-action@v2
+      - id: project_version
+        run: echo "stdout=$(samo project version)" >> $GITHUB_OUTPUT           
+      - id: project_name
+        run: echo "stdout=$(samo project name)" >> $GITHUB_OUTPUT         
+      - uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.CI_PAT }}
+          repository: ${{ inputs.targetRepository }}
+          event-type: ${{ inputs.eventName }}
+          client-payload: '{"repo": "${{ steps.project_name.outputs.stdout }}", "version": "${{ steps.project_version.outputs.stdout }}"}'
