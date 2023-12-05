@@ -22,6 +22,7 @@ jobs:
         with:
           token: ${{ secrets.CI_PAT }}
           ref: ${{ github.head_ref }}
+      - uses: lorislab/install-samo-action@v2
       - name: Update helm chart
         run:
           samo project helm deps-update --helm-absolute-dir --helm-dir ${{ inputs.helmSourceDir }} --helm-deps-name ${{ github.event.client_payload.repo }} --helm-deps-version ${{ github.event.client_payload.version }}
