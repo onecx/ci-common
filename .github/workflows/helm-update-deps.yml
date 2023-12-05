@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Update helm chart dependency
+    name: helm chart update dependency
     runs-on: ubuntu-latest
     permissions:
       contents: write

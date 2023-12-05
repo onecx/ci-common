@@ -14,7 +14,7 @@ on:
         type: string
 jobs:
   build:
-    name: Create helm update event
+    name: helm create update event
     runs-on: ubuntu-latest
     permissions:
       contents: write
