@@ -17,7 +17,10 @@ jobs:
       contents: write
     steps:
       - name: Event
-        run: echo ${{ github.event.client_payload }}
+        run: |
+          echo ${{ github.event.client_payload.name }}
+          echo ${{ github.event.client_payload.version }}
+          echo ${{ github.event.client_payload.repo }}
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.CI_PAT }}
@@ -25,7 +28,7 @@ jobs:
       - uses: lorislab/install-samo-action@v2
       - name: Update helm chart
         run:
-          samo project helm deps-update --helm-absolute-dir --helm-dir ${{ inputs.helmSourceDir }} --helm-deps-name ${{ github.event.client_payload.repo }} --helm-deps-version ${{ github.event.client_payload.version }}
+          samo project helm deps-update --helm-absolute-dir --helm-dir ${{ inputs.helmSourceDir }} --helm-deps-name ${{ github.event.client_payload.name }} --helm-deps-version ${{ github.event.client_payload.version }} --helm-deps-repo ${{ github.event.client_payload.repo }}
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'chore(deps): update ${{ github.event.client_payload.repo }} to version ${{ github.event.client_payload.version }}'
+          commit_message: 'chore(deps): update ${{ github.event.client_payload.name }} to version ${{ github.event.client_payload.version }}'

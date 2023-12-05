@@ -12,6 +12,11 @@ on:
         default: 'helm-update-deps'
         required: false
         type: string
+      helmRepository:
+        description: 'Helm repository'
+        default: 'oci://ghcr.io/onecx/charts'
+        required: false
+        type: string        
 jobs:
   build:
     name: helm create update event
@@ -32,4 +37,4 @@ jobs:
           token: ${{ secrets.CI_PAT }}
           repository: ${{ inputs.targetRepository }}
           event-type: ${{ inputs.eventName }}
-          client-payload: '{"repo": "${{ steps.project_name.outputs.stdout }}", "version": "${{ steps.project_version.outputs.stdout }}"}'
+          client-payload: '{"name": "${{ steps.project_name.outputs.stdout }}", "version": "${{ steps.project_version.outputs.stdout }}", "repo": "${{ inputs.helmRepository }}"}'
