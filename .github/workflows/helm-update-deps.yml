@@ -32,4 +32,4 @@ jobs:
       - run: rm -rf samo
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'chore(deps): update ${{ github.event.client_payload.name }} to version ${{ github.event.client_payload.version }}'
+          commit_message: 'chore(deps): update ${{ github.event.client_payload.name }} version ${{ github.event.client_payload.version }}'
