@@ -29,6 +29,7 @@ jobs:
       - name: Update helm chart
         run:
           samo project helm lock-update --helm-absolute-dir --helm-dir ${{ inputs.helmSourceDir }} -v debug
+      - run: rm -rf samo
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore(deps): update ${{ github.event.client_payload.name }} to version ${{ github.event.client_payload.version }}'
