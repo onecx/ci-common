@@ -13,6 +13,9 @@ jobs:
   build:
     name: helm chart update dependency
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true    
     permissions:
       contents: write
     steps:
