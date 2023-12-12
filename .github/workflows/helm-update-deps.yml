@@ -28,7 +28,7 @@ jobs:
       - uses: lorislab/install-samo-action@v2
       - name: Update helm chart
         run:
-          samo project helm lock-update --helm-absolute-dir --helm-dir ${{ inputs.helmSourceDir }} --helm-deps-name -v debug
+          samo project helm lock-update --helm-absolute-dir --helm-dir ${{ inputs.helmSourceDir }} -v debug
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore(deps): update ${{ github.event.client_payload.name }} to version ${{ github.event.client_payload.version }}'
