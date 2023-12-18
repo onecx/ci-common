@@ -37,7 +37,12 @@ on:
         description: 'Name of the artifact for the build'
         default: 'package'
         required: false
-        type: string      
+        type: string
+      templateValuesYaml:
+        description: 'Template to replace values in values.yaml file'  
+        required: false
+        default: 'app.image.registry=ghcr.io,app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
+        type: string
 jobs:
   helm:
     name: helm build and push
@@ -52,7 +57,7 @@ jobs:
       SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts      
       SAMO_HELM_DIR: ${{ inputs.helmDir }}
       SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
-      SAMO_HELM_VALUES_TEMPLATE_LIST: 'app.image.registry=ghcr.io,app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
+      SAMO_HELM_VALUES_TEMPLATE_LIST: ${{ inputs.templateValuesYaml }}
       SAMO_CONVENTIONAL_COMMITS: 'true'
     steps:
       - uses: lorislab/install-samo-action@v2
