@@ -16,5 +16,6 @@ jobs:
           ref: ${{ github.head_ref }}
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          skip_dirty_check: true
           commit_options: '--allow-empty'
           commit_message: 'chore(ci): create new build'
