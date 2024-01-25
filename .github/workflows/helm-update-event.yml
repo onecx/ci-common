@@ -32,7 +32,7 @@ jobs:
         run: echo "stdout=$(samo project version)" >> $GITHUB_OUTPUT           
       - id: project_name
         run: echo "stdout=$(samo project name)" >> $GITHUB_OUTPUT         
-      - uses: peter-evans/repository-dispatch@v1
+      - uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.CI_PAT }}
           repository: ${{ inputs.targetRepository }}
