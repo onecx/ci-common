@@ -16,6 +16,9 @@ jobs:
           ref: ${{ github.head_ref }}
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          commit_user_name: tkit-dev
+          commit_user_email: tkit-dev@1000kit.org
+          commit_author: tkit-dev <tkit-dev@1000kit.org>
           skip_dirty_check: true
           commit_options: '--allow-empty'
           commit_message: 'chore(ci): create new build'
