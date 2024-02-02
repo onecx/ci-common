@@ -49,7 +49,7 @@ jobs:
       SAMO_DOCKER_SKIP_OPENCONTAINERS_LABELS: 'false'
       SAMO_DOCKER_CONTEXT: '.'
       SAMO_DOCKER_SKIP_PULL: 'false'
-      SAMO_DOCKER_BUILD_PUSH: 'false'
+      SAMO_DOCKER_BUILD_PUSH: ${{ inputs.push }}
       SAMO_DOCKER_SKIP_DEV: 'false'
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'
       SAMO_CONVENTIONAL_COMMITS: 'true'
@@ -76,6 +76,3 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}  
     - name: docker build
       run: samo project docker build -v debug
-    - name: docker push
-      if: ${{ inputs.push }}
-      run: samo project docker push -v debug 
