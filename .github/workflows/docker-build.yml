@@ -50,7 +50,7 @@ jobs:
       SAMO_DOCKER_CONTEXT: '.'
       SAMO_DOCKER_SKIP_PULL: 'false'
       SAMO_DOCKER_BUILD_PUSH: ${{ inputs.push }}
-      SAMO_DOCKER_SKIP_DEV: 'false'
+      SAMO_DOCKER_SKIP_DEV: 'true'
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'
       SAMO_CONVENTIONAL_COMMITS: 'true'
       SAMO_DOCKER_BUILDX: ${{ inputs.buildx }}
