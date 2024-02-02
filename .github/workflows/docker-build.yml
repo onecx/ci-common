@@ -57,8 +57,6 @@ jobs:
       SAMO_DOCKER_PLATFORM: ${{ inputs.platform }}
     steps:
     - uses: lorislab/install-samo-action@v2
-      with:
-        version: '3.11.0'
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
