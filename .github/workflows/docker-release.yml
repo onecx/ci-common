@@ -8,6 +8,11 @@ on:
         default: '{{ .Release }}'
         required: false
         type: string
+      imagetools:
+        description: 'Use image tools for relaese'
+        default: true
+        required: false
+        type: boolean        
 jobs:
   docker:
     name: docker build and push
@@ -27,12 +32,15 @@ jobs:
       SAMO_DOCKER_SKIP_DEV: 'false'
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'
       SAMO_CONVENTIONAL_COMMITS: 'true'
+      SAMO_DOCKER_RELEASE_IMAGE_TOOLS: ${{ inputs.imagetools }}
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: ${{ github.ref_name }}
     - uses: lorislab/install-samo-action@v2
+      with:
+        version: '3.11.0'    
     - uses: docker/login-action@v2
       with:
         registry: ${{ env.SAMO_DOCKER_REGISTRY }}
