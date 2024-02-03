@@ -55,8 +55,11 @@ jobs:
       SAMO_CONVENTIONAL_COMMITS: 'true'
       SAMO_DOCKER_BUILDX: ${{ inputs.buildx }}
       SAMO_DOCKER_PLATFORM: ${{ inputs.platform }}
+      SAMO_DOCKER_PROVENANCE: "false"
     steps:
     - uses: lorislab/install-samo-action@v2
+      with:
+        version: 3.12.0
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
