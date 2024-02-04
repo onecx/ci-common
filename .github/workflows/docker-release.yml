@@ -12,7 +12,12 @@ on:
         description: 'Use image tools for relaese'
         default: true
         required: false
-        type: boolean        
+        type: boolean
+      releaseImageTag:
+        description: 'The docker image tag use for release. Default release candidate docker image tag.'
+        default: '{{ .Version }}'
+        required: false
+        type: string                
 jobs:
   docker:
     name: docker build and push
@@ -33,6 +38,7 @@ jobs:
       SAMO_DOCKER_REMOVE_INTERMEDIATE_IMG_SKIP: 'false'
       SAMO_CONVENTIONAL_COMMITS: 'true'
       SAMO_DOCKER_RELEASE_IMAGE_TOOLS: ${{ inputs.imagetools }}
+      SAMO_DOCKER_RELEASE_IMAGE_TAG: ${{ inputs.releaseImageTag }}
     steps:
     - uses: actions/checkout@v4
       with:
