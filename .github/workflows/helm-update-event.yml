@@ -16,11 +16,18 @@ on:
         description: 'Helm repository'
         default: 'oci://ghcr.io/onecx/charts'
         required: false
-        type: string        
+        type: string
+      addRepoDeps:
+        description: 'Add repository from dependencies'
+        default: false
+        required: false
+        type: boolean
 jobs:
   build:
     name: helm create update event
     runs-on: ubuntu-latest
+    env:
+      SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}
     permissions:
       contents: write
     steps:

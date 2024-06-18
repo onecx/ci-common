@@ -43,6 +43,11 @@ on:
         required: false
         default: 'app.image.registry=ghcr.io,app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
         type: string
+      addRepoDeps:
+        description: 'Add repository from dependencies'
+        default: false
+        required: false
+        type: boolean
 jobs:
   helm:
     name: helm build and push
@@ -59,6 +64,7 @@ jobs:
       SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
       SAMO_HELM_VALUES_TEMPLATE_LIST: ${{ inputs.templateValuesYaml }}
       SAMO_CONVENTIONAL_COMMITS: 'true'
+      SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}
     steps:
       - uses: lorislab/install-samo-action@v2
       - uses: actions/checkout@v4

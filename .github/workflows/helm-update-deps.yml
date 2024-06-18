@@ -8,11 +8,17 @@ on:
         default: 'helm'
         required: false
         type: string
-
+      addRepoDeps:
+        description: 'Add repository from dependencies'
+        default: false
+        required: false
+        type: boolean
 jobs:
   build:
     name: helm chart update dependency
     runs-on: ubuntu-latest
+    env:
+      SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}    
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true    
