@@ -2,7 +2,48 @@ name: helm
 
 on:
   workflow_call:
-   
+    inputs:
+      helmSourceDir:
+        description: 'Helm source directory path'
+        default: 'src/main/helm'
+        required: false
+        type: string
+      helmSourceCopy:
+        description: 'Samo copy and filter helm source directory'
+        default: false
+        required: false
+        type: boolean
+      helmDir:
+        description: 'Helm directory path'
+        default: 'target/helm'
+        required: false
+        type: string
+      templateChartYaml:
+        description: 'Template to replace values in Chart.yaml file'  
+        required: false
+        default: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
+        type: string
+      templateValuesYaml:
+        description: 'Template to replace values in values.yaml file'  
+        required: false
+        default: 'app.image.registry=ghcr.io,app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
+        type: string
+      templateReleaseChartYaml:
+        description: 'Template to replace values for release in Chart.yaml file'  
+        required: false
+        default: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
+        type: string
+      templateReleaseValuesYaml:
+        description: 'Template to replace values for release in values.yaml file'  
+        required: false
+        default: 'app.image.registry=ghcr.io,app.image.tag={{ .Release }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
+        type: string
+      addRepoDeps:
+        description: 'Add repository from dependencies'
+        default: false
+        required: false
+        type: boolean
+
 jobs:
   helm:
     name: helm release
@@ -10,15 +51,16 @@ jobs:
     env:
       SAMO_DOCKER_REGISTRY: ghcr.io
       SAMO_DOCKER_RELEASE_REGISTRY: ghcr.io
-      SAMO_HELM_SOURCE_DIR: ${{ inputs.samoHelmSourceDir }}
-      SAMO_HELM_SOURCE_COPY: ${{ inputs.samoHelmSourceCopy }}
-      SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts      
-      SAMO_HELM_DIR: target/helm
-      SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
-      SAMO_HELM_VALUES_TEMPLATE_LIST: 'app.image.registry=ghcr.io,app.image.tag={{ .Version }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
-      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST: 'app.image.registry=ghcr.io,app.image.tag={{ .Release }},app.image.repository=${{ github.repository_owner }}/{{ .Name }}'
-      SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: 'version={{ .Release }},appVersion={{ .Release }},name={{ .Name }}'
-      SAMO_CONVENTIONAL_COMMITS: 'true'      
+      SAMO_HELM_SOURCE_DIR: ${{ inputs.helmSourceDir }}
+      SAMO_HELM_SOURCE_COPY: ${{ inputs.helmSourceCopy }}
+      SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts
+      SAMO_HELM_DIR: ${{ inputs.helmDir }}
+      SAMO_HELM_CHART_TEMPLATE_LIST: ${{ inputs.templateChartYaml }}
+      SAMO_HELM_VALUES_TEMPLATE_LIST: ${{ inputs.templateValuesYaml }}
+      SAMO_HELM_VALUES_RELEASE_TEMPLATE_LIST:  ${{ inputs.templateReleaseValuesYaml }}
+      SAMO_HELM_CHART_RELEASE_TEMPLATE_LIST: ${{ inputs.templateReleaseChartYaml }}
+      SAMO_CONVENTIONAL_COMMITS: 'true'
+      SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}
     steps:
       - uses: actions/checkout@v4
         with:

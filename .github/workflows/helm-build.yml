@@ -38,6 +38,11 @@ on:
         default: 'package'
         required: false
         type: string
+      templateChartYaml:
+        description: 'Template to replace values in Chart.yaml file'  
+        required: false
+        default: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
+        type: string
       templateValuesYaml:
         description: 'Template to replace values in values.yaml file'  
         required: false
@@ -59,9 +64,9 @@ jobs:
       SAMO_HELM_ABSOLUTE_DIR: ${{ inputs.helmAbsoluteDir }}
       SAMO_HELM_SOURCE_DIR: ${{ inputs.helmSourceDir }}
       SAMO_HELM_SOURCE_COPY: ${{ inputs.helmSourceCopy }}
-      SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts      
+      SAMO_HELM_REGISTRY: oci://ghcr.io/${{ github.repository_owner }}/charts
       SAMO_HELM_DIR: ${{ inputs.helmDir }}
-      SAMO_HELM_CHART_TEMPLATE_LIST: 'version={{ .Version }},appVersion={{ .Version }},name={{ .Name }}'
+      SAMO_HELM_CHART_TEMPLATE_LIST: ${{ inputs.templateChartYaml }}
       SAMO_HELM_VALUES_TEMPLATE_LIST: ${{ inputs.templateValuesYaml }}
       SAMO_CONVENTIONAL_COMMITS: 'true'
       SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}
