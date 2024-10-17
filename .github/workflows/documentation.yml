@@ -1,6 +1,12 @@
 name: documentation
 on:
   workflow_call:
+    docs:
+      tags:
+        description: 'Documentation repository'
+        default: 'docs'
+        required: false
+        type: string
 
 jobs:
   build:
@@ -9,5 +15,5 @@ jobs:
       - uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.CI_PAT }}
-          repository: onecx/docs
+          repository: onecx/${{ inputs.docs }}
           event-type: dispatch-build-website
