@@ -37,7 +37,7 @@ jobs:
           fetch-depth: 0      
       - uses: lorislab/install-samo-action@v2
       - id: project_version
-        run: echo "stdout=$(samo project version)" >> $GITHUB_OUTPUT           
+        run: echo "stdout=$(samo project version -c)" >> $GITHUB_OUTPUT           
       - id: project_name
         run: echo "stdout=$(samo project name)" >> $GITHUB_OUTPUT         
       - uses: peter-evans/repository-dispatch@v3
