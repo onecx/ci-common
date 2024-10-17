@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}
+      SAMO_CONVENTIONAL_COMMITS: 'true'
     permissions:
       contents: write
     steps:
