@@ -1,8 +1,8 @@
 name: documentation
 on:
   workflow_call:
-    docs:
-      tags:
+    inputs:
+      docs:
         description: 'Documentation repository'
         default: 'docs'
         required: false
