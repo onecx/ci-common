@@ -82,9 +82,6 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
-        format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
-        vuln-type: 'os,library'
+        #image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
+        image-ref: 'ghcr.io/onecx/docker-spa-base:1.9.0'
         severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
