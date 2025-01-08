@@ -84,4 +84,4 @@ jobs:
       if: ${{ inputs.push }}
       with:
         image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
-        severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+        severity: 'HIGH,CRITICAL'
