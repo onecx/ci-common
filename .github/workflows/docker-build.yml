@@ -75,10 +75,14 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}  
     - name: docker build
       run: samo project docker build -v debug
+    # set build env variables
+    - name: Create build env variables
+      run: |
+        echo "APPLICATION_VERSION=$(samo project version)" >> $GITHUB_ENV
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ github.sha }}'
+        image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
         format: 'table'
         exit-code: '1'
         ignore-unfixed: true
