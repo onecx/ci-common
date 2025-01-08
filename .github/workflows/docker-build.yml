@@ -73,8 +73,8 @@ jobs:
         registry: ${{ env.SAMO_DOCKER_REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}  
-    - name: docker build
-      run: samo project docker build -v debug
+    #- name: docker build
+    #  run: samo project docker build -v debug
     # set build env variables
     - name: Create build env variables
       run: |
