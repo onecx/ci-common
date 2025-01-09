@@ -81,10 +81,10 @@ jobs:
         echo "APPLICATION_VERSION=$(samo project version)" >> $GITHUB_ENV
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.28.0
+      env: 
+        TRIVY_DEPENDENCY_TREE: 'true'
       if: ${{ inputs.push }}
       with:
         image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
         severity: 'HIGH,CRITICAL'
-        format: github
-        output: 'dependency-results.sbom.json'
-        github-pat: ${{ secrets.GITHUB_TOKEN }}
+        format: table
