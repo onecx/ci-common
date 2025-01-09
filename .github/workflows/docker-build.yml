@@ -32,7 +32,12 @@ on:
         description: 'Docker buildx'
         default: false
         required: false
-        type: boolean                      
+        type: boolean   
+      trivy:
+        description: 'Docker buildx'
+        default: true
+        required: false
+        type: boolean                    
 jobs:
   docker:
     name: docker build and push
@@ -83,7 +88,7 @@ jobs:
       uses: aquasecurity/trivy-action@0.28.0
       env: 
         TRIVY_DEPENDENCY_TREE: 'true'
-      if: ${{ inputs.push }}
+      if: ${{ inputs.push && inputs.trivy }}
       with:
         image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
         severity: 'HIGH,CRITICAL'
