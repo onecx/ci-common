@@ -23,7 +23,7 @@ jobs:
     # set build env variables
     - name: Create build env variables
       run: |
-        if [[ ${{ fromJSON(inputs.native) }} ]]; then
+        if [[ ${{ inputs.native }} == 'true' ]]; then
             echo "APPLICATION_VERSION=$(samo project version)-native" >> $GITHUB_ENV
         else
             echo "APPLICATION_VERSION=$(samo project version)" >> $GITHUB_ENV
