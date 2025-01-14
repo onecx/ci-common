@@ -3,11 +3,16 @@ name: trivy
 on:
   workflow_call:
     inputs: 
-      native:
-        description: 'Native image'
-        default: false
+      artifact:
+        description: 'Name of the artifact for the build'
+        default: 'package'
         required: false
-        type: boolean
+        type: string   
+      artifactPath:
+        description: 'Artifact path'
+        default: 'target'
+        required: false
+        type: string
 jobs:
   trivy:
     name: docker trivy scan
@@ -16,21 +21,18 @@ jobs:
     env:
       TRIVY_DEPENDENCY_TREE: 'true'
     steps:
-    - uses: lorislab/install-samo-action@v2
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    # set build env variables
-    - name: Create build env variables
-      run: |
-        if [[ ${{ inputs.native }} == 'true' ]]; then
-            echo "APPLICATION_VERSION=$(samo project version)-native" >> $GITHUB_ENV
-        else
-            echo "APPLICATION_VERSION=$(samo project version)" >> $GITHUB_ENV
-        fi
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.28.0
-      with:
-        image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
-        severity: 'HIGH,CRITICAL'
-        format: table
+      - uses: dawidd6/action-download-artifact@v3
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: ${{ inputs.artifact }}      
+          path: ${{ inputs.artifactPath }}
+      - uses: juliangruber/read-file-action@v1
+        id: version_tag
+        with:
+          path: ./${{ inputs.artifactPath }}
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}'
+          severity: 'HIGH,CRITICAL'
+          format: table
