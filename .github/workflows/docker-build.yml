@@ -32,7 +32,12 @@ on:
         description: 'Docker buildx'
         default: false
         required: false
-        type: boolean                      
+        type: boolean   
+      trivy:
+        description: 'Start trivy scan'
+        default: true
+        required: false
+        type: boolean                    
 jobs:
   docker:
     name: docker build and push
@@ -75,3 +80,17 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}  
     - name: docker build
       run: samo project docker build -v debug
+    # set build env variables
+    - name: Create build env variables
+      run: |
+        echo "APPLICATION_VERSION=$(samo project version)" >> $GITHUB_ENV
+    - name: Run Trivy vulnerability scanner
+      continue-on-error: true
+      uses: aquasecurity/trivy-action@0.28.0
+      env: 
+        TRIVY_DEPENDENCY_TREE: 'true'
+      if: ${{ inputs.push && inputs.trivy }}
+      with:
+        image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
+        severity: 'HIGH,CRITICAL'
+        format: table
