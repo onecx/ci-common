@@ -21,22 +21,15 @@ jobs:
     env:
       TRIVY_DEPENDENCY_TREE: 'true'
     steps:
-      - uses: xSAVIKx/artifact-exists-action@v0
-        id: check_coverage_artifact
-        with:
-          name: '${{ inputs.artifact }}'
       - uses: dawidd6/action-download-artifact@v3
-        if: ${{ steps.check_coverage_artifact.outputs.exists }}
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: ${{ inputs.artifact }}
       - uses: juliangruber/read-file-action@v1
-        if: ${{ steps.check_coverage_artifact.outputs.exists }}
         id: version_tag
         with:
           path: ./${{ inputs.artifactPath }}
       - name: Run Trivy vulnerability scanner
-        if: ${{ steps.check_coverage_artifact.outputs.exists }}
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}'
