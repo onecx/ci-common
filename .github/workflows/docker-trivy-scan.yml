@@ -40,28 +40,11 @@ jobs:
         if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         run: |
           echo "APPLICATION_VERSION=${{ steps.version_tag.outputs.content }}" >> $GITHUB_ENV
-      - name: Run Trivy vulnerability scanner
-        continue-on-error: true
-        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}'
-          severity: 'HIGH,CRITICAL'
-          format: table
       - name: Run Trivy vulnerability scanner for app version
-        continue-on-error: true
         if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
-          severity: 'HIGH,CRITICAL'
-          format: table
-      - name: Run Trivy vulnerability scanner for main
-        continue-on-error: true
-        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:main'
           severity: 'HIGH,CRITICAL'
           format: table
       - name: Run Trivy vulnerability scanner for latest
@@ -89,11 +72,15 @@ jobs:
         id: version_tag
         with:
           path: ./${{ inputs.artifactPath }}
-      - name: Run Trivy vulnerability scanner
+      - name: Get the build version
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
+        run: |
+          echo "APPLICATION_VERSION=${{ steps.version_tag.outputs.content }}-native" >> $GITHUB_ENV
+      - name: Run Trivy vulnerability scanner for app version
         if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}-native'
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
           severity: 'HIGH,CRITICAL'
           format: table
       - name: Run Trivy vulnerability scanner for latest
