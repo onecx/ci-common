@@ -34,7 +34,7 @@ on:
         required: false
         type: boolean   
       trivy:
-        description: 'Docker buildx'
+        description: 'Start trivy scan'
         default: true
         required: false
         type: boolean                    
