@@ -21,17 +21,27 @@ jobs:
     env:
       TRIVY_DEPENDENCY_TREE: 'true'
     steps:
-      - uses: dawidd6/action-download-artifact@v3
+      - uses: dawidd6/action-download-artifact@v7
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: ${{ inputs.artifact }}
+          if_no_artifact_found: ignore
       - uses: juliangruber/read-file-action@v1
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         id: version_tag
         with:
           path: ./${{ inputs.artifactPath }}
       - name: Run Trivy vulnerability scanner
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}'
+          severity: 'HIGH,CRITICAL'
+          format: table
+      - name: Run Trivy vulnerability scanner for latest
+        if: ${{ hashFiles( inputs.artifactPath ) == '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:main'
           severity: 'HIGH,CRITICAL'
           format: table
