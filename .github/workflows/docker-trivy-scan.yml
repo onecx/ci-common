@@ -75,12 +75,12 @@ jobs:
       - name: Get the build version
         if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         run: |
-          echo "APPLICATION_VERSION=${{ steps.version_tag.outputs.content }}-native" >> $GITHUB_ENV
+          echo "APPLICATION_VERSION=${{ steps.version_tag.outputs.content }}" >> $GITHUB_ENV
       - name: Run Trivy vulnerability scanner for app version
         if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}-native'
           severity: 'HIGH,CRITICAL'
           format: table
       - name: Run Trivy vulnerability scanner for latest
