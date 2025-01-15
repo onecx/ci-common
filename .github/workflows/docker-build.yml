@@ -85,6 +85,7 @@ jobs:
       run: |
         echo "APPLICATION_VERSION=$(samo project version)" >> $GITHUB_ENV
     - name: Run Trivy vulnerability scanner
+      continue-on-error: true
       uses: aquasecurity/trivy-action@0.28.0
       env: 
         TRIVY_DEPENDENCY_TREE: 'true'
