@@ -3,6 +3,11 @@ name: trivy
 on:
   workflow_call:
     inputs: 
+      native:
+        description: 'Build native image'
+        default: false
+        required: false
+        type: boolean
       artifact:
         description: 'Name of the artifact for the build'
         default: 'quarkus-version'
@@ -31,6 +36,10 @@ jobs:
         id: version_tag
         with:
           path: ./${{ inputs.artifactPath }}
+      - name: Get the build version
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
+        run: |
+          echo "APPLICATION_VERSION=${{ steps.version_tag.outputs.content }}" >> $GITHUB_ENV
       - name: Run Trivy vulnerability scanner
         if: ${{ hashFiles( inputs.artifactPath ) != '' }}
         uses: aquasecurity/trivy-action@0.28.0
@@ -38,10 +47,56 @@ jobs:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}'
           severity: 'HIGH,CRITICAL'
           format: table
+      - name: Run Trivy vulnerability scanner for app version
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.APPLICATION_VERSION }}'
+          severity: 'HIGH,CRITICAL'
+          format: table
+      - name: Run Trivy vulnerability scanner for main
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:main'
+          severity: 'HIGH,CRITICAL'
+          format: table
       - name: Run Trivy vulnerability scanner for latest
         if: ${{ hashFiles( inputs.artifactPath ) == '' }}
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:main'
+          severity: 'HIGH,CRITICAL'
+          format: table
+  trivy-native:
+    if: ${{ inputs.native }}
+    name: docker trivy scan native
+    # runs-on: [ self-hosted, aws ]
+    runs-on: ubuntu-latest
+    env:
+      TRIVY_DEPENDENCY_TREE: 'true'
+    steps:
+      - uses: dawidd6/action-download-artifact@v7
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: ${{ inputs.artifact }}
+          if_no_artifact_found: ignore
+      - uses: juliangruber/read-file-action@v1
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
+        id: version_tag
+        with:
+          path: ./${{ inputs.artifactPath }}
+      - name: Run Trivy vulnerability scanner
+        if: ${{ hashFiles( inputs.artifactPath ) != '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ steps.version_tag.outputs.content }}-native'
+          severity: 'HIGH,CRITICAL'
+          format: table
+      - name: Run Trivy vulnerability scanner for latest
+        if: ${{ hashFiles( inputs.artifactPath ) == '' }}
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: 'ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:main-native'
           severity: 'HIGH,CRITICAL'
           format: table
