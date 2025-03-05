@@ -2,7 +2,13 @@ name: dependency-review
 
 on:
   workflow_call:
-     
+    inputs:
+      failOnSeverity:
+        description: 'Defines the threshold for the level of severity. Values low, moderate, high, critical.'
+        default: 'low'
+        required: false
+        type: string
+        
 jobs:
   dependency-review:
     name: dependency review
@@ -14,4 +20,4 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          fail-on-severity: high
+          fail-on-severity: ${{ inputs.failOnSeverity }}
