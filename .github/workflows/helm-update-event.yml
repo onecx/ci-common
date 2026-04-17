@@ -32,15 +32,15 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0      
       - uses: lorislab/install-samo-action@v2
       - id: project_version
-        run: echo "stdout=$(samo project version -c)" >> $GITHUB_OUTPUT           
+        run: echo "stdout=$(samo project version -c)" >> $GITHUB_OUTPUT
       - id: project_name
-        run: echo "stdout=$(samo project name)" >> $GITHUB_OUTPUT         
-      - uses: peter-evans/repository-dispatch@v3
+        run: echo "stdout=$(samo project name)" >> $GITHUB_OUTPUT
+      - uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.CI_PAT }}
           repository: ${{ inputs.targetRepository }}

@@ -40,12 +40,12 @@ jobs:
       SAMO_DOCKER_RELEASE_IMAGE_TOOLS: ${{ inputs.imagetools }}
       SAMO_DOCKER_RELEASE_IMAGE_TAG: ${{ inputs.releaseImageTag }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
         ref: ${{ github.ref_name }}
     - uses: lorislab/install-samo-action@v2
-    - uses: docker/login-action@v3
+    - uses: docker/login-action@v4
       with:
         registry: ${{ env.SAMO_DOCKER_REGISTRY }}
         username: ${{ github.actor }}

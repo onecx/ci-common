@@ -7,9 +7,9 @@ jobs:
     name: create release tag
     runs-on: ubuntu-latest
     env:
-      SAMO_CONVENTIONAL_COMMITS: 'true'    
+      SAMO_CONVENTIONAL_COMMITS: 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           token: ${{ secrets.CI_PAT }}
@@ -18,6 +18,6 @@ jobs:
           git config --global --add safe.directory "${GITHUB_WORKSPACE}"
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-      - uses: lorislab/install-samo-action@v2   
+      - uses: lorislab/install-samo-action@v2
       - name: Create release
         run: samo project release

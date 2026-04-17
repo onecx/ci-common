@@ -72,15 +72,15 @@ jobs:
       SAMO_HELM_ADD_REPO_DEPS: ${{ inputs.addRepoDeps }}
     steps:
       - uses: lorislab/install-samo-action@v2
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ${{ env.SAMO_DOCKER_REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}        
-      - uses: actions/download-artifact@v4
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v8
         if: ${{ inputs.artifact != '' }} 
         with:
           name: ${{ inputs.artifact }}

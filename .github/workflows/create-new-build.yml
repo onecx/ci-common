@@ -10,11 +10,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ secrets.CI_PAT }}
           ref: ${{ github.head_ref }}
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_user_name: tkit-dev
           commit_user_email: tkit-dev@1000kit.org

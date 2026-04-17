@@ -8,12 +8,13 @@ jobs:
     name: generate changelog
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          ref: ${{ github.ref_name }}    
-      - uses: lorislab/install-changelog-action@v1
-      - name: Create changelog 
-        run: changelog generate --create-release --close-version --file .github/changelog.yaml
+          ref: ${{ github.ref_name }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          generate_release_notes: true
         env:
-          CHANGELOG_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
