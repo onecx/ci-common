@@ -40,7 +40,7 @@ jobs:
       SAMO_DOCKER_RELEASE_IMAGE_TOOLS: ${{ inputs.imagetools }}
       SAMO_DOCKER_RELEASE_IMAGE_TAG: ${{ inputs.releaseImageTag }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
         ref: ${{ github.ref_name }}

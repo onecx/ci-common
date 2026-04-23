@@ -63,7 +63,7 @@ jobs:
       SAMO_DOCKER_PROVENANCE: "false"
     steps:
     - uses: lorislab/install-samo-action@v2
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - uses: actions/download-artifact@v8
