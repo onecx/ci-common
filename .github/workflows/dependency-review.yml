@@ -8,6 +8,11 @@ on:
         default: 'low'
         required: false
         type: string
+      warnOnly:
+        description: 'When set to true, the action will log all vulnerabilities as warnings regardless of the severity, and the action will complete with a success status. This overrides the fail-on-severity option.'
+        default: false
+        required: false
+        type: boolean
         
 jobs:
   dependency-review:
@@ -21,3 +26,4 @@ jobs:
         uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: ${{ inputs.failOnSeverity }}
+          warn-only: ${{ inputs.warnOnly }}
